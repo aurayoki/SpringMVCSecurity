@@ -12,11 +12,14 @@
             <th>ID</th>
             <th>Name</th>
             <th>Email</th>
+            <th>Roles</th>
         </tr>
         <tr>
             <td th:text="${user.id}"></td>
             <td th:text="${user.username}"></td>
             <td th:text="${user.email}"></td>
+            <td th:each="role : ${roles}">
+            <p th:text="${role.name}"></p></td>
         </tr>
     </table>
     <a th:href="@{/logout}">Logout</a>

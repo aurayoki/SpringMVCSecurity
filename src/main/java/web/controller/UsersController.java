@@ -10,7 +10,6 @@ import web.service.RoleService;
 import web.service.UserService;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -27,20 +26,21 @@ public class UsersController {
     @GetMapping("admin")
     public String listUser(ModelMap modelMap) {
         modelMap.addAttribute("list", userService.getAllUsers());
-        return "admin";
+        return "adminPage";
     }
 
-    @GetMapping( "user")
+    @GetMapping("user")
     public String infoUser(@AuthenticationPrincipal User user, ModelMap model) {
         model.addAttribute("user", user);
-        return "user";
+        model.addAttribute("roles", user.getRoles());
+        return "userPage";
     }
 
     @GetMapping(value = "user/new")
     public String newUser(ModelMap model) {
         model.addAttribute("user", new User());
         model.addAttribute("roles", roleService.getAllRoles());
-        return "new";
+        return "createNew";
     }
 
     @PostMapping(value = "user/new")
@@ -57,14 +57,18 @@ public class UsersController {
 
     @GetMapping(value = "user/edit/{id}")
     public String editUser(@PathVariable("id") long id, ModelMap model) {
-        User user = userService.getById(id);
-        model.addAttribute("user", user);
+        model.addAttribute("user", userService.getById(id));
+        model.addAttribute("roles", roleService.getAllRoles());
         return "editUser";
     }
 
     @PostMapping(value = "user/edit/{id}")
-    public String editUser(@ModelAttribute User user, @RequestParam(value = "roles") String role) {
-
+    public String editUser(@ModelAttribute User user, @RequestParam(value = "roless") String [] role) {
+        Set<Role> rolesSet = new HashSet<>();
+        for (String roles : role) {
+            rolesSet.add((roleService.getByName(roles)));
+        }
+        user.setRoles(rolesSet);
         userService.edit(user);
         return "redirect:/admin";
     }
