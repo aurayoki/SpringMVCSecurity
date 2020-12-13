@@ -42,8 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/**")
                 .hasAnyRole("ADMIN")
                 .and()
-                .formLogin()
-                .successHandler(successUserHandler)
+                .formLogin() // Spring сам подставит свою логин форму
+                .successHandler(successUserHandler) // подключаем наш SuccessHandler для перенеправления по ролям
                 .permitAll()
                 .and()
                 .logout()
@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable();
     }
-
+    // конфигурация для прохождения аутентификации
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
